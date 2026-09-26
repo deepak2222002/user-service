@@ -23,30 +23,30 @@ pipeline {
         }
 
         stage('Deploy') {
-        steps {
-            withCredentials([usernamePassword(
-                credentialsId: 'db-remoteuser',
-                usernameVariable: 'DB_USERNAME',
-                passwordVariable: 'DB_PASSWORD'
-            )]) {
-                sh '''
-                    docker stop user-service || true
-                    docker rm user-service || true
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: 'db-remoteuser',
+                    usernameVariable: 'DB_USERNAME',
+                    passwordVariable: 'DB_PASSWORD'
+                )]) {
+                    sh '''
+                        docker stop user-service || true
+                        docker rm user-service || true
 
-                    docker run -d \
-                    --name user-service \
-                    --network backend_default \
-                    --restart unless-stopped \
-                    -p 8092:8092 \
-                    -e DB_URL="jdbc:sqlserver://sqlserver:1433;databaseName=jobportal;trustServerCertificate=true" \
-                    -e DB_USERNAME="$DB_USERNAME" \
-                    -e DB_PASSWORD="$DB_PASSWORD" \
-                    -e KAFKA_BOOTSTRAP_SERVERS="kafka:9092" \
-                    user-service
-                '''
+                        docker run -d \
+                        --name user-service \
+                        --network backend_default \
+                        --restart unless-stopped \
+                        -p 8092:8080 \
+                        -e DB_URL="jdbc:sqlserver://sqlserver:1433;databaseName=jobportal;trustServerCertificate=true" \
+                        -e DB_USERNAME="$DB_USERNAME" \
+                        -e DB_PASSWORD="$DB_PASSWORD" \
+                        -e KAFKA_BOOTSTRAP_SERVERS="kafka:9092" \
+                        user-service
+                    '''
+                }
             }
         }
-    }
 
     }
 }
