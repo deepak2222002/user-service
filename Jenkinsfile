@@ -37,7 +37,7 @@ pipeline {
                         --name user-service \
                         --network backend_default \
                         --restart unless-stopped \
-                        -p 8092:8080 \
+                        -p 8092:8443 \
                         -e DB_URL="jdbc:sqlserver://sqlserver:1433;databaseName=jobportal;trustServerCertificate=true" \
                         -e DB_USERNAME="$DB_USERNAME" \
                         -e DB_PASSWORD="$DB_PASSWORD" \
