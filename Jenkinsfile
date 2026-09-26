@@ -23,7 +23,12 @@ pipeline {
         }
 
         stage('Deploy') {
-            steps {
+        steps {
+            withCredentials([usernamePassword(
+                credentialsId: 'db-remoteuser',
+                usernameVariable: 'DB_USERNAME',
+                passwordVariable: 'DB_PASSWORD'
+            )]) {
                 sh '''
                     docker stop user-service || true
                     docker rm user-service || true
@@ -31,15 +36,17 @@ pipeline {
                     docker run -d \
                     --name user-service \
                     --network backend_default \
+                    --restart unless-stopped \
                     -p 8092:8092 \
                     -e DB_URL="jdbc:sqlserver://sqlserver:1433;databaseName=jobportal;trustServerCertificate=true" \
-                    -e DB_USERNAME="remoteuser" \
-                    -e DB_PASSWORD="remote@321" \
+                    -e DB_USERNAME="$DB_USERNAME" \
+                    -e DB_PASSWORD="$DB_PASSWORD" \
                     -e KAFKA_BOOTSTRAP_SERVERS="kafka:9092" \
                     user-service
                 '''
             }
         }
+    }
 
     }
 }
