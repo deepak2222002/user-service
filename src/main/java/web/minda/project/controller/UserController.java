@@ -25,7 +25,7 @@ public class UserController {
 			LoginMaster savedUser = userService.createUser(jsonObject);
 
 			Map<String, Object> response = new HashMap<>();
-			response.put("message", "User created successfully");
+			response.put("message", "Please check your given Email to activate your account.\n An activation link has sent by the portal.");
 			response.put("user", savedUser);
 
 			return new ResponseEntity<>(response, HttpStatus.OK);

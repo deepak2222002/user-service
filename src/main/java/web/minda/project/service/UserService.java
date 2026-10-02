@@ -30,6 +30,7 @@ public class UserService {
         
         
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setIsEnabled(false);
         LoginMaster savedUser = loginMasterRepository.save(user);
         
         // After successful DB insertion
